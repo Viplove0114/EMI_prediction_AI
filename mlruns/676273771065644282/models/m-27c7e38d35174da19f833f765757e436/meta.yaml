@@ -1,0 +1,10 @@
+artifact_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-27c7e38d35174da19f833f765757e436/artifacts
+creation_timestamp: 1762243888389
+experiment_id: '676273771065644282'
+last_updated_timestamp: 1762243896185
+model_id: m-27c7e38d35174da19f833f765757e436
+model_type: null
+name: random_forest_regressor_model
+source_run_id: c0f61f6f68fc432a8e470a47f1bf0fac
+status: 2
+status_message: null

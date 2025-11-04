@@ -1,0 +1,22 @@
+artifact_path: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-21e3a2e486164ef0b06f474e8aa958ac/artifacts
+flavors:
+  python_function:
+    data: model.xgb
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.13.9
+  xgboost:
+    code: null
+    data: model.xgb
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: xgb
+    xgb_version: 3.0.5
+mlflow_version: 3.5.1
+model_id: m-21e3a2e486164ef0b06f474e8aa958ac
+model_size_bytes: 832940
+model_uuid: m-21e3a2e486164ef0b06f474e8aa958ac
+prompts: null
+run_id: 9bf410880e4e4839b2dce731f26d8d6f
+utc_time_created: '2025-11-04 08:20:01.454063'

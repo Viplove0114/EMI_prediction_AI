@@ -1,0 +1,15 @@
+creation_timestamp: 1762247492229
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1762247492229
+model_id: m-61d50da4d56c495d96f7973156b1f195
+name: XGBoostRegressor
+run_id: a12dfb6e51f74f09aad4e4bacfe4529e
+run_link: null
+source: models:/m-61d50da4d56c495d96f7973156b1f195
+status: READY
+status_message: null
+storage_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-61d50da4d56c495d96f7973156b1f195/artifacts
+user_id: null
+version: 1

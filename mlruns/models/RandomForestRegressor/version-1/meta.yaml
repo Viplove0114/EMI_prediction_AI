@@ -1,0 +1,15 @@
+creation_timestamp: 1762247456539
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1762247456539
+model_id: m-47e64bf9f79f497f9792498963ee23e3
+name: RandomForestRegressor
+run_id: 3516ba1a1efb46bd80b69da60c16484f
+run_link: null
+source: models:/m-47e64bf9f79f497f9792498963ee23e3
+status: READY
+status_message: null
+storage_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-47e64bf9f79f497f9792498963ee23e3/artifacts
+user_id: null
+version: 1

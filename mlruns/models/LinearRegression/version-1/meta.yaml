@@ -1,0 +1,15 @@
+creation_timestamp: 1762247222468
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1762247222468
+model_id: m-f578f6d6612b4a6ea7441ecca239eb98
+name: LinearRegression
+run_id: d6781dc724f940d0a7abebf0864336f1
+run_link: null
+source: models:/m-f578f6d6612b4a6ea7441ecca239eb98
+status: READY
+status_message: null
+storage_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-f578f6d6612b4a6ea7441ecca239eb98/artifacts
+user_id: null
+version: 1

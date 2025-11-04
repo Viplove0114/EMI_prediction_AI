@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/8521b7d1f68f403f8c6c3f204931d143/artifacts
+end_time: 1762243664748
+entry_point_name: ''
+experiment_id: '676273771065644282'
+lifecycle_stage: active
+run_id: 8521b7d1f68f403f8c6c3f204931d143
+run_name: Baseline_Models
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762243638677
+status: 3
+tags: []
+user_id: Viplove

@@ -1,0 +1,10 @@
+artifact_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-74bda5b7050343a29c719f65e6fa55da/artifacts
+creation_timestamp: 1762247471068
+experiment_id: '676273771065644282'
+last_updated_timestamp: 1762247479056
+model_id: m-74bda5b7050343a29c719f65e6fa55da
+model_type: null
+name: model
+source_run_id: ec9dbea62a134bb0b7c3f1949038aab3
+status: 2
+status_message: null

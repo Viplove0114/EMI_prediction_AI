@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/0a2df01cd3ee4c7192ef4501ea050505/artifacts
+end_time: 1762247213045
+entry_point_name: ''
+experiment_id: '676273771065644282'
+lifecycle_stage: active
+run_id: 0a2df01cd3ee4c7192ef4501ea050505
+run_name: LogisticRegression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762247196813
+status: 3
+tags: []
+user_id: Viplove

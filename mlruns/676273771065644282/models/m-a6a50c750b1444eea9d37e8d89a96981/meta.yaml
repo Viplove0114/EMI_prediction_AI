@@ -1,0 +1,10 @@
+artifact_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-a6a50c750b1444eea9d37e8d89a96981/artifacts
+creation_timestamp: 1762243658848
+experiment_id: '676273771065644282'
+last_updated_timestamp: 1762243664724
+model_id: m-a6a50c750b1444eea9d37e8d89a96981
+model_type: null
+name: linear_regression_model
+source_run_id: 8521b7d1f68f403f8c6c3f204931d143
+status: 2
+status_message: null

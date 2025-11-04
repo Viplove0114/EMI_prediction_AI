@@ -1,0 +1,10 @@
+artifact_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-f647e92416dc451b9c9644c43ef9f53f/artifacts
+creation_timestamp: 1762243646275
+experiment_id: '676273771065644282'
+last_updated_timestamp: 1762243658031
+model_id: m-f647e92416dc451b9c9644c43ef9f53f
+model_type: null
+name: logistic_regression_model
+source_run_id: 8521b7d1f68f403f8c6c3f204931d143
+status: 2
+status_message: null

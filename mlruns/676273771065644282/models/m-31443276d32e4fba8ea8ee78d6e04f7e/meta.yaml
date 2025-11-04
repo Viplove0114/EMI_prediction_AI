@@ -1,0 +1,10 @@
+artifact_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-31443276d32e4fba8ea8ee78d6e04f7e/artifacts
+creation_timestamp: 1762243912163
+experiment_id: '676273771065644282'
+last_updated_timestamp: 1762243919253
+model_id: m-31443276d32e4fba8ea8ee78d6e04f7e
+model_type: null
+name: xgboost_classifier_model
+source_run_id: 2a8932834fd845f79806edd4d26be6a7
+status: 2
+status_message: null

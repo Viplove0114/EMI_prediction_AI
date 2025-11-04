@@ -1,0 +1,10 @@
+artifact_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-91e6da55113048b389ebaa5ad5afcf83/artifacts
+creation_timestamp: 1762059340106
+experiment_id: '676273771065644282'
+last_updated_timestamp: 1762059353666
+model_id: m-91e6da55113048b389ebaa5ad5afcf83
+model_type: null
+name: random_forest_classifier_model
+source_run_id: 1db0c9b086df49ea94eb7ba9ce4fc88d
+status: 2
+status_message: null
