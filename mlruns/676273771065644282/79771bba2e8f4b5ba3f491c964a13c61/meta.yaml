@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/79771bba2e8f4b5ba3f491c964a13c61/artifacts
+end_time: 1762253458593
+entry_point_name: ''
+experiment_id: '676273771065644282'
+lifecycle_stage: active
+run_id: 79771bba2e8f4b5ba3f491c964a13c61
+run_name: RandomForestClassifier
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762253418370
+status: 4
+tags: []
+user_id: Viplove

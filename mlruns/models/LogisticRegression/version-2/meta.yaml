@@ -1,0 +1,15 @@
+creation_timestamp: 1762253411248
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1762253411248
+model_id: m-dfb790ee6d9645f0b53391778ac75e0e
+name: LogisticRegression
+run_id: 90a306cf9d5c4433bb6e00f7449d237f
+run_link: null
+source: models:/m-dfb790ee6d9645f0b53391778ac75e0e
+status: READY
+status_message: null
+storage_location: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-dfb790ee6d9645f0b53391778ac75e0e/artifacts
+user_id: null
+version: 2

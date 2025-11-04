@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/6dd054dbc222449b8957c23434accb5e/artifacts
+end_time: 1762254299189
+entry_point_name: ''
+experiment_id: '676273771065644282'
+lifecycle_stage: active
+run_id: 6dd054dbc222449b8957c23434accb5e
+run_name: XGBoostRegressor
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762254285756
+status: 3
+tags: []
+user_id: Viplove

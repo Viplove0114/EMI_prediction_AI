@@ -1,18 +1,20 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
-import streamlit as st
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.metrics import (
     accuracy_score, precision_recall_fscore_support, roc_auc_score,
     mean_squared_error, mean_absolute_error, r2_score, mean_absolute_percentage_error
 )
 
-# --- Step 1: Data Loading ---
+# --- 1. Data Loading ---
 @st.cache_data
-def load_data(filepath='emi_prediction_dataset.csv'):
-    """Loads the dataset. Using low_memory=False to help with the DtypeWarning."""
+def load_data(filepath):
+    """
+    Loads data from a CSV, with error handling.
+    """
     try:
         df = pd.read_csv(filepath, low_memory=False)
         return df
@@ -23,82 +25,153 @@ def load_data(filepath='emi_prediction_dataset.csv'):
         st.error(f"Error loading data: {e}")
         return None
 
-# --- Step 1 (Cont.): Data Cleaning ---
+# --- 2. Data Cleaning ---
 def clean_data(df):
     """
-    Applies the full data cleaning pipeline:
-    1. Coerces object columns to numeric.
-    2. Imputes all missing values.
+    Cleans object columns and imputes all missing values.
     """
-    df_clean = df.copy()
-    
-    # 1. Clean Problematic Object Columns
-    df_clean['age'] = pd.to_numeric(df_clean['age'], errors='coerce')
-    df_clean['monthly_salary'] = pd.to_numeric(df_clean['monthly_salary'], errors='coerce')
-    df_clean['bank_balance'] = pd.to_numeric(df_clean['bank_balance'], errors='coerce')
+    # a) Clean object columns to numeric (this creates new NaNs)
+    df['age'] = pd.to_numeric(df['age'], errors='coerce')
+    df['monthly_salary'] = pd.to_numeric(df['monthly_salary'], errors='coerce')
+    df['bank_balance'] = pd.to_numeric(df['bank_balance'], errors='coerce')
 
-    # 2. Impute Missing Values
-    missing_vals = df_clean.isnull().sum()
+    # b) Identify ALL columns that now have NaNs
+    missing_vals = df.isnull().sum()
     cols_with_na = missing_vals[missing_vals > 0].index.tolist()
 
-    if cols_with_na:
-        numeric_cols_with_na = [col for col in cols_with_na if df_clean[col].dtype in ['float64', 'int64']]
-        categorical_cols_with_na = [col for col in cols_with_na if df_clean[col].dtype == 'object']
-        
-        if numeric_cols_with_na:
-            num_imputer = SimpleImputer(strategy='median')
-            df_clean[numeric_cols_with_na] = num_imputer.fit_transform(df_clean[numeric_cols_with_na])
-        
-        if categorical_cols_with_na:
-            cat_imputer = SimpleImputer(strategy='most_frequent')
-            df_clean[categorical_cols_with_na] = cat_imputer.fit_transform(df_clean[categorical_cols_with_na])
-            
-    return df_clean
+    if not cols_with_na:
+        return df
 
-# --- Step 3: Feature Engineering ---
+    # c) Separate them into numeric and categorical lists
+    numeric_cols_with_na = [col for col in cols_with_na if df[col].dtype in ['float64', 'int64']]
+    categorical_cols_with_na = [col for col in cols_with_na if df[col].dtype == 'object']
+
+    # d) Apply Imputation
+    if numeric_cols_with_na:
+        num_imputer = SimpleImputer(strategy='median')
+        df[numeric_cols_with_na] = num_imputer.fit_transform(df[numeric_cols_with_na])
+    
+    if categorical_cols_with_na:
+        cat_imputer = SimpleImputer(strategy='most_frequent')
+        df[categorical_cols_with_na] = cat_imputer.fit_transform(df[categorical_cols_with_na])
+
+    return df
+
+# --- 3. Feature Engineering ---
 def engineer_features(df):
     """
-    Applies the full feature engineering pipeline:
-    1. Creates new financial ratios.
-    2. Cleans 'gender' column.
-    3. Encodes binary, ordinal, and nominal columns.
-    4. Encodes the target variable.
+    Creates new financial ratios, encodes variables, and returns the processed DataFrame,
+    LabelEncoder, and the list of final feature names.
     """
-    df_eng = df.copy()
-    epsilon = 1e-6 # For safe division
-
-    # 1. Create New Financial Ratios
+    # --- 1. Create New Financial Ratios ---
+    epsilon = 1e-6 
     expense_cols = ['monthly_rent', 'school_fees', 'college_fees', 
                     'travel_expenses', 'groceries_utilities', 'other_monthly_expenses']
-    df_eng['total_monthly_expenses'] = df_eng[expense_cols].sum(axis=1)
-    df_eng['debt_to_income_ratio'] = (df_eng['current_emi_amount'] + df_eng['total_monthly_expenses']) / (df_eng['monthly_salary'] + epsilon)
-    df_eng['savings_to_income_ratio'] = (df_eng['bank_balance'] + df_eng['emergency_fund']) / (df_eng['monthly_salary'] + epsilon)
-    df_eng['loan_to_income_ratio'] = df_eng['requested_amount'] / (df_eng['monthly_salary'] + epsilon)
-    df_eng['dependents_ratio'] = df_eng['dependents'] / (df_eng['family_size'] + epsilon)
+    df['total_monthly_expenses'] = df[expense_cols].sum(axis=1)
     
-    # 2. Clean 'gender' column
-    df_eng['gender'] = df_eng['gender'].astype(str).str.lower()
-    gender_map = {'female': 'Female', 'f': 'Female', 'male': 'Male', 'm': 'Male'}
-    df_eng['gender'] = df_eng['gender'].replace(gender_map)
+    df['debt_to_income_ratio'] = (df['current_emi_amount'] + df['total_monthly_expenses']) / (df['monthly_salary'] + epsilon)
+    df['savings_to_income_ratio'] = (df['bank_balance'] + df['emergency_fund']) / (df['monthly_salary'] + epsilon)
+    df['expense_to_income_ratio'] = df['total_monthly_expenses'] / (df['monthly_salary'] + epsilon)
+    df['emi_to_income_ratio'] = df['current_emi_amount'] / (df['monthly_salary'] + epsilon)
+    df['affordability_ratio'] = (df['monthly_salary'] - df['total_monthly_expenses'] - df['current_emi_amount']) / (df['monthly_salary'] + epsilon)
     
-    # 3. Encode Categorical Features
-    df_eng['existing_loans'] = df_eng['existing_loans'].map({'Yes': 1, 'No': 0})
+    df.replace([np.inf, -np.inf], 0, inplace=True)
     
-    education_map = {'High School': 1, 'Graduate': 2, 'Post Graduate': 3, 'Professional': 4}
-    df_eng['education_encoded'] = df_eng['education'].map(lambda x: education_map.get(x, 1))
-    
-    nominal_cols = ['gender', 'marital_status', 'employment_type', 
-                    'company_type', 'house_type', 'emi_scenario']
-    df_encoded = pd.get_dummies(df_eng, columns=nominal_cols, drop_first=True, dtype=int)
-    
-    # 4. Encode Target Variable
+    # --- 2. Clean 'gender' column ---
+    df['gender'] = df['gender'].str.lower().map({
+        'male': 'Male', 'm': 'Male', 'female': 'Female', 'f': 'Female'
+    }).fillna('Other')
+
+    # --- 3. Encode Categorical Columns ---
+    categorical_cols = [
+        'gender', 'marital_status', 'education', 'employment_type',
+        'company_type', 'house_type', 'existing_loans', 'emi_scenario'
+    ]
+    df_encoded = pd.get_dummies(df, columns=categorical_cols, dtype=bool)
+
+    # --- 4. Label Encode Target Variable ---
     le = LabelEncoder()
     df_encoded['emi_eligibility_encoded'] = le.fit_transform(df_encoded['emi_eligibility'])
     
-    return df_encoded, le
+    # --- 5. Get Final Feature List ---
+    target_classification = 'emi_eligibility_encoded'
+    target_regression = 'max_monthly_emi'
+    
+    # Define columns to drop
+    cols_to_drop = [
+        'emi_eligibility', 'education', # Dropping original 'education' as requested in notebook
+        target_classification, target_regression
+    ]
+    
+    # Find all one-hot encoded 'education' columns to drop them too
+    education_dummies = [col for col in df_encoded.columns if col.startswith('education_')]
+    
+    # Combine all columns to be dropped
+    features_to_drop = cols_to_drop + education_dummies
+    
+    # Get the final list of feature names
+    all_feature_names = [col for col in df_encoded.columns if col not in features_to_drop]
 
-# --- Step 4: Helper Functions for Metrics ---
+    # --- THIS IS THE FIX ---
+    # Now returns all 3 items
+    return df_encoded, le, all_feature_names
+
+# --- 4. Data Splitting & Scaling ---
+def split_and_scale_data(df, all_feature_names, le):
+    """
+    Splits data into train/val/test, scales numerical features, and returns
+    a dictionary of data splits and the fitted scaler.
+    """
+    # 1. Separate Features (X) and Targets (y)
+    X = df[all_feature_names]
+    y_class = df['emi_eligibility_encoded']
+    y_reg = df['max_monthly_emi']
+    
+    # 2. Train-Test Split (80% train, 20% test)
+    X_train, X_test, y_train_class, y_test_class, y_train_reg, y_test_reg = train_test_split(
+        X, y_class, y_reg, test_size=0.2, random_state=42, stratify=y_class
+    )
+    
+    # 3. Train-Validation Split (from the 80% train, create 75% train, 25% val)
+    # This results in 60% train, 20% val, 20% test overall
+    X_train_final, X_val, y_train_class_final, y_val_class, y_train_reg_final, y_val_reg = train_test_split(
+        X_train, y_train_class, y_train_reg, test_size=0.25, random_state=42, stratify=y_train_class
+    )
+    
+    # 4. Feature Scaling
+    # Identify continuous numerical columns to scale (exclude booleans)
+    bool_cols = X_train_final.select_dtypes(include='bool').columns
+    all_cols = X_train_final.columns
+    numerical_cols_to_scale = [col for col in all_cols if col not in bool_cols]
+
+    scaler = StandardScaler()
+    
+    # Fit on training data
+    X_train_final[numerical_cols_to_scale] = scaler.fit_transform(X_train_final[numerical_cols_to_scale])
+    
+    # Transform validation and test data
+    X_val[numerical_cols_to_scale] = scaler.transform(X_val[numerical_cols_to_scale])
+    X_test[numerical_cols_to_scale] = scaler.transform(X_test[numerical_cols_to_scale])
+
+    # 5. Return all splits in a dictionary
+    data_splits = {
+        "X_train_scaled": X_train_final,
+        "X_val_scaled": X_val,
+        "X_test_scaled": X_test,
+        "y_train_class": y_train_class_final,
+        "y_val_class": y_val_class,
+        "y_test_class": y_test_class,
+        "y_train_reg": y_train_reg_final,
+        "y_val_reg": y_val_reg,
+        "y_test_reg": y_test_reg
+    }
+    
+    return data_splits, scaler
+
+# --- 5. Model Evaluation Metrics ---
+
 def eval_regression_metrics(y_true, y_pred):
+    """Calculates and returns a dictionary of regression metrics."""
     rmse = np.sqrt(mean_squared_error(y_true, y_pred))
     mae = mean_absolute_error(y_true, y_pred)
     r2 = r2_score(y_true, y_pred)
@@ -106,14 +179,21 @@ def eval_regression_metrics(y_true, y_pred):
     return {"rmse": rmse, "mae": mae, "r2": r2, "mape": mape}
 
 def eval_classification_metrics(y_true, y_pred, y_prob, num_classes):
+    """Calculates and returns a dictionary of classification metrics."""
     acc = accuracy_score(y_true, y_pred)
+    
+    # Calculate precision, recall, f1 for 'macro' average
     precision_macro, recall_macro, f1_macro, _ = precision_recall_fscore_support(
-        y_true, y_pred, average='macro'
+        y_true, y_pred, average='macro', zero_division=0
     )
+    
+    # Calculate ROC-AUC
     if num_classes > 2:
         roc_auc = roc_auc_score(y_true, y_prob, multi_class='ovr', average='macro')
     else:
+        # Fallback for binary
         roc_auc = roc_auc_score(y_true, y_prob[:, 1], average='macro')
+
     return {
         "accuracy": acc,
         "precision_macro": precision_macro,
@@ -122,66 +202,3 @@ def eval_classification_metrics(y_true, y_pred, y_prob, num_classes):
         "roc_auc_macro": roc_auc
     }
 
-# --- Prediction Pipeline Function ---
-def preprocess_for_prediction(input_data, scaler, le, feature_names):
-    """
-    Takes a single row of raw input data (as a DataFrame) and
-    prepares it for prediction.
-    """
-    
-    # Make a copy
-    df_predict = input_data.copy()
-    
-    # 1. Apply cleaning (handles coerce to NaN)
-    # Note: We don't impute, we assume prediction inputs are complete.
-    # A more robust app would handle missing prediction inputs.
-    df_predict['age'] = pd.to_numeric(df_predict['age'], errors='coerce')
-    df_predict['monthly_salary'] = pd.to_numeric(df_predict['monthly_salary'], errors='coerce')
-    df_predict['bank_balance'] = pd.to_numeric(df_predict['bank_balance'], errors='coerce')
-
-    # Fill any NaNs created during coercion with 0 or a sensible default
-    # This is a simple strategy; median imputation from training would be better
-    df_predict = df_predict.fillna(0)
-
-    # 2. Apply feature engineering
-    epsilon = 1e-6
-    expense_cols = ['monthly_rent', 'school_fees', 'college_fees', 
-                    'travel_expenses', 'groceries_utilities', 'other_monthly_expenses']
-    df_predict['total_monthly_expenses'] = df_predict[expense_cols].sum(axis=1)
-    df_predict['debt_to_income_ratio'] = (df_predict['current_emi_amount'] + df_predict['total_monthly_expenses']) / (df_predict['monthly_salary'] + epsilon)
-    df_predict['savings_to_income_ratio'] = (df_predict['bank_balance'] + df_predict['emergency_fund']) / (df_predict['monthly_salary'] + epsilon)
-    df_predict['loan_to_income_ratio'] = df_predict['requested_amount'] / (df_predict['monthly_salary'] + epsilon)
-    df_predict['dependents_ratio'] = df_predict['dependents'] / (df_predict['family_size'] + epsilon)
-    
-    # 3. Apply encoding
-    df_predict['gender'] = df_predict['gender'].astype(str).str.lower()
-    gender_map = {'female': 'Female', 'f': 'Female', 'male': 'Male', 'm': 'Male'}
-    df_predict['gender'] = df_predict['gender'].replace(gender_map)
-    
-    df_predict['existing_loans'] = df_predict['existing_loans'].map({'Yes': 1, 'No': 0})
-    
-    education_map = {'High School': 1, 'Graduate': 2, 'Post Graduate': 3, 'Professional': 4}
-    df_predict['education_encoded'] = df_predict['education'].map(lambda x: education_map.get(x, 1))
-    
-    nominal_cols = ['gender', 'marital_status', 'employment_type', 
-                    'company_type', 'house_type', 'emi_scenario']
-    df_processed = pd.get_dummies(df_predict, columns=nominal_cols, drop_first=True, dtype=int)
-
-    # 4. Align Columns
-    # Get all columns from the processed data
-    processed_cols = df_processed.columns.tolist()
-    
-    # Create a final DataFrame with all features, initialized to 0
-    final_df = pd.DataFrame(columns=feature_names)
-    final_df.loc[0] = 0
-    
-    # Fill in the values we have
-    for col in processed_cols:
-        if col in feature_names:
-            final_df[col] = df_processed[col].values
-
-    # 5. Apply Scaling
-    numerical_cols_to_scale = [col for col in scaler.feature_names_in_ if col in final_df.columns]
-    final_df[numerical_cols_to_scale] = scaler.transform(final_df[numerical_cols_to_scale])
-    
-    return final_df

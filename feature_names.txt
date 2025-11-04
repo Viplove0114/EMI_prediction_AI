@@ -9,7 +9,6 @@ college_fees
 travel_expenses
 groceries_utilities
 other_monthly_expenses
-existing_loans
 current_emi_amount
 credit_score
 bank_balance
@@ -19,19 +18,27 @@ requested_tenure
 total_monthly_expenses
 debt_to_income_ratio
 savings_to_income_ratio
-loan_to_income_ratio
-dependents_ratio
-education_encoded
+expense_to_income_ratio
+emi_to_income_ratio
+affordability_ratio
+gender_Female
 gender_Male
+marital_status_Married
 marital_status_Single
+employment_type_Government
 employment_type_Private
 employment_type_Self-employed
+company_type_Large Indian
 company_type_MNC
 company_type_Mid-size
 company_type_Small
 company_type_Startup
+house_type_Family
 house_type_Own
 house_type_Rented
+existing_loans_No
+existing_loans_Yes
+emi_scenario_E-commerce Shopping EMI
 emi_scenario_Education EMI
 emi_scenario_Home Appliances EMI
 emi_scenario_Personal Loan EMI

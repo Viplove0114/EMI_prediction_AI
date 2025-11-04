@@ -1,0 +1,22 @@
+artifact_path: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/models/m-4fec83ba45c84d009bd301a22f5393b9/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.9
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.2
+mlflow_version: 3.5.1
+model_id: m-4fec83ba45c84d009bd301a22f5393b9
+model_size_bytes: 2205
+model_uuid: m-4fec83ba45c84d009bd301a22f5393b9
+prompts: null
+run_id: db227b47cf114bc6a31979603aff3743
+utc_time_created: '2025-11-04 11:00:58.694952'

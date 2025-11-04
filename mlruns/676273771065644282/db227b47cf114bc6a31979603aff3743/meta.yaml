@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/Viplove%20Thakran/Desktop/Projects/EMI_prediction/mlruns/676273771065644282/db227b47cf114bc6a31979603aff3743/artifacts
+end_time: 1762254064542
+entry_point_name: ''
+experiment_id: '676273771065644282'
+lifecycle_stage: active
+run_id: db227b47cf114bc6a31979603aff3743
+run_name: LinearRegression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762254057675
+status: 3
+tags: []
+user_id: Viplove
