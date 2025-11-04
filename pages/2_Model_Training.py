@@ -29,7 +29,7 @@ This page runs the complete end-to-end ML pipeline.
 """)
 
 st.info("""
-**To View Results:**
+**To View Results (Locally):**
 1.  Open your terminal.
 2.  Navigate to this project's folder.
 3.  Run: `mlflow ui`
@@ -72,6 +72,16 @@ if st.button("🚀 Start Full Training Pipeline", type="primary", use_container_
 
         st.header("Step 4: Model Training & MLflow Logging", divider="blue")
         
+    
+        # Force MLflow to use a local, relative path for the tracking URI.
+        # This overrides any system-level environment variables and
+        # fixes the "[Errno 13] Permission denied: '/c:'" error on Streamlit Cloud.
+        try:
+            mlflow.set_tracking_uri("./mlruns")
+            st.write("MLflow tracking URI set to local './mlruns' folder.")
+        except Exception as e:
+            st.warning(f"Could not set MLflow tracking URI: {e}")
+            
         # Set experiment
         EXPERIMENT_NAME = "EMIPredict_Al_v1"
         mlflow.set_experiment(EXPERIMENT_NAME)
@@ -149,7 +159,7 @@ if st.button("🚀 Start Full Training Pipeline", type="primary", use_container_
                     y_pred_class_rfc = rfc.predict(data_splits["X_val_scaled"])
                     y_prob_class_rfc = rfc.predict_proba(data_splits["X_val_scaled"])
                     
-                  
+                
                     class_metrics_rfc = utils.eval_classification_metrics(data_splits["y_val_class"], y_pred_class_rfc, y_prob_class_rfc, num_classes=num_classes)
                     
                     mlflow.log_metrics({f"val_{k}": v for k, v in class_metrics_rfc.items()})
@@ -177,7 +187,7 @@ if st.button("🚀 Start Full Training Pipeline", type="primary", use_container_
                     
                     y_pred_reg_rfr = rfr.predict(data_splits["X_val_scaled"])
                     
-       
+           
                     reg_metrics_rfr = utils.eval_regression_metrics(data_splits["y_val_reg"], y_pred_reg_rfr)
                     
                     mlflow.log_metrics({f"val_{k}": v for k, v in reg_metrics_rfr.items()})
@@ -266,5 +276,5 @@ if st.button("🚀 Start Full Training Pipeline", type="primary", use_container_
             
         st.balloons()
         st.header("🎉 --- Full Training Pipeline Complete! --- 🎉", divider="green")
-        st.success("All models trained and artifacts saved. Check your MLflow UI!")
+        st.success("All models trained and artifacts saved. You can now commit the .joblib files to GitHub and redeploy!")
 
