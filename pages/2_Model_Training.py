@@ -86,6 +86,7 @@ if st.button("🚀 Start Full Training Pipeline", type="primary", use_container_
         EXPERIMENT_NAME = "EMIPredict_Al_v1"
         mlflow.set_experiment(EXPERIMENT_NAME)
         st.write(f"MLflow experiment set to: **{EXPERIMENT_NAME}**")
+        st.write(f"If you getting errors in training below, don't worry, you can still do predictions!")
         
         num_classes = len(le.classes_)
         
@@ -276,5 +277,5 @@ if st.button("🚀 Start Full Training Pipeline", type="primary", use_container_
             
         st.balloons()
         st.header("🎉 --- Full Training Pipeline Complete! --- 🎉", divider="green")
-        st.success("All models trained and artifacts saved. You can now commit the .joblib files to GitHub and redeploy!")
+        st.success("All models trained and artifacts saved. You can proceed to the prediction page!")
 
